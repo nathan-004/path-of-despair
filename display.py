@@ -434,4 +434,31 @@ if __name__ == "__main__":
 
     pygame.quit()
 
+def make_buttons(surface: pygame.Surface, actions: list, space_percent: int = 20, button_bloc_pos: tuple = (0, 0)) -> list: # Nathan
+    """
+    Crée et renvoie une liste de MouseButton pour la surface donnée.
 
+    Parameters
+    ----------
+    surface: pygame.Surface
+        Surface sur laquelle les boutons seront dessinés (utilisée pour calculs de taille).
+    actions: list
+        Liste de tuples (label: str, callback: Callable).
+    space_percent: int
+        Pourcentage d'espace réservé autour des boutons (voir implémentation originale).
+    button_bloc_pos: tuple
+        Position (offset) en coordonnées fenêtre où la surface contenant les boutons est blittée.
+    """
+    if not actions:
+        return []
+
+    nb = len(actions)
+    space = int(get_size(surface, space_percent) / (nb + 1))
+    size = (int(get_size(surface, 100 - space_percent) / nb), int(get_size(surface, 100, "height")))
+
+    buttons = []
+    for idx, (button_txt, button_callable) in enumerate(actions, start=1):
+        pos = (space * idx + size[0] * (idx - 1), 0)
+        buttons.append(MouseButton(button_txt, pos, size, button_callable, surface, button_bloc_pos))
+
+    return buttons
